@@ -1,5 +1,6 @@
 import requests
 import time
+from pathlib import Path
 
 # Stores IDs from API calls
 all_ids = []
@@ -21,3 +22,13 @@ while True:
     if len(all_ids) >= 1000:
         break
 
+resp = requests.get(
+    f"https://collectionapi.metmuseum.org/public/collection/v1/objects/{all_ids[0]}"
+)
+resp.raise_for_status()
+
+raw = resp.text
+
+folder = Path(__file__).parent.parent / "data" / "raw" / "met"
+folder.mkdir(parents=True, exist_ok=True)
+(folder / f"{all_ids[0]}.json").write_text(raw)
