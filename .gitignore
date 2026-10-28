@@ -1,0 +1,39 @@
+# Local notes
+CLAUDE.md
+
+# macOS
+.DS_Store
+
+# Editors
+.vscode/
+.idea/
+
+# Secrets (API keys, database URLs)
+.env
+.env.*
+!.env.example
+
+# Pipeline data: regenerate by running the harvester
+/data/
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+dist/
+build/
+*.egg-info/
+
+# Next.js (web/)
+node_modules/
+.next/
+out/
+next-env.d.ts
+*.tsbuildinfo
+.vercel/
+npm-debug.log*
