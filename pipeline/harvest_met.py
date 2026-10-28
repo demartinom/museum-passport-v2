@@ -1,4 +1,5 @@
 import requests
+import time
 
 # Stores IDs from API calls
 all_ids = []
@@ -15,6 +16,7 @@ while True:
     data = resp.json()
     all_ids.extend(data["objectIDs"])
     offset += 100
+    time.sleep(0.5)
     if len(all_ids) >= 1000:
         break
 
