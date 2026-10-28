@@ -21,4 +21,3 @@ while True:
     if len(all_ids) >= 1000:
         break
 
-print(f"Length:{len(all_ids)}, IDs:{all_ids}")
