@@ -13,6 +13,7 @@ while True:
         "https://collectionapi.metmuseum.org/public/collection/v1.1/search",
         params={"q": "porcelain", "departmentId": 6, "limit": 100, "offset": offset},
     )
+    resp.raise_for_status()
     data = resp.json()
     all_ids.extend(data["objectIDs"])
     offset += 100
