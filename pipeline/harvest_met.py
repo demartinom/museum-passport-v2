@@ -40,6 +40,7 @@ for object_id in all_ids:
     raw = resp.text
     (folder / f"{object_id}.json").write_text(raw)
     time.sleep(1)
+
 print("IDs not found")
 for id in not_found:
     print(f"{id}")
