@@ -22,13 +22,17 @@ while True:
     if len(all_ids) >= 1000:
         break
 
-resp = requests.get(
-    f"https://collectionapi.metmuseum.org/public/collection/v1/objects/{all_ids[0]}"
-)
-resp.raise_for_status()
-
-raw = resp.text
-
 folder = Path(__file__).parent.parent / "data" / "raw" / "met"
 folder.mkdir(parents=True, exist_ok=True)
-(folder / f"{all_ids[0]}.json").write_text(raw)
+
+for object_id in all_ids:
+    path = folder / f"{object_id}.json"
+    if path.exists():
+        continue
+    resp = requests.get(
+        f"https://collectionapi.metmuseum.org/public/collection/v1/objects/{object_id}"
+    )
+    resp.raise_for_status()
+    raw = resp.text
+    (folder / f"{object_id}.json").write_text(raw)
+    time.sleep(1)
