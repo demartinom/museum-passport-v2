@@ -42,5 +42,5 @@ for object_id in all_ids:
     time.sleep(1)
 
 print("IDs not found")
-for id in not_found:
+for object_id in not_found:
     print(f"{id}")
