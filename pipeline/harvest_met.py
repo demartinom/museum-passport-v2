@@ -38,7 +38,7 @@ for object_id in all_ids:
         continue
     resp.raise_for_status()
     raw = resp.text
-    (folder / f"{object_id}.json").write_text(raw)
+    path.write_text(raw)
     time.sleep(1)
 
 print("IDs not found")
