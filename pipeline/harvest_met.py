@@ -24,7 +24,7 @@ while True:
 
 folder = Path(__file__).parent.parent / "data" / "raw" / "met"
 folder.mkdir(parents=True, exist_ok=True)
-
+not_found = []
 for object_id in all_ids:
     path = folder / f"{object_id}.json"
     if path.exists():
@@ -32,7 +32,14 @@ for object_id in all_ids:
     resp = requests.get(
         f"https://collectionapi.metmuseum.org/public/collection/v1/objects/{object_id}"
     )
+    if resp.status_code == 404:
+        not_found.append(object_id)
+        time.sleep(1)
+        continue
     resp.raise_for_status()
     raw = resp.text
     (folder / f"{object_id}.json").write_text(raw)
     time.sleep(1)
+print("IDs not found")
+for id in not_found:
+    print(f"{id}")
