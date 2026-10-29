@@ -43,4 +43,4 @@ for object_id in all_ids:
 
 print("IDs not found")
 for object_id in not_found:
-    print(f"{id}")
+    print(f"{object_id}")
