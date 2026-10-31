@@ -13,5 +13,10 @@ raw = json.loads(raw_text)
 
 record = {}
 
-for my_field, met_field in mapping.items():
+for my_field, met_field in mapping["fields"].items():
     record[my_field] = raw[met_field]
+
+for my_field, fixed_value in mapping["fixed"].items():
+    record[my_field] = fixed_value
+
+record["id"] = f"{record['museum']}-{record['source_id']}"
