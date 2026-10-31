@@ -1,11 +1,14 @@
-source_id: objectID
-title: title
-artist: artistDisplayName
-date_display: objectDate
-date_begin: objectBeginDate
-date_end: objectEndDate
-url: objectURL
-image_large: primaryImage
-image_small: primaryImageSmall
-medium: medium
-public_domain: isPublicDomain
+fields:
+  source_id: objectID
+  title: title
+  artist: artistDisplayName
+  date_display: objectDate
+  date_begin: objectBeginDate
+  date_end: objectEndDate
+  url: objectURL
+  image_large: primaryImage
+  image_small: primaryImageSmall
+  medium: medium
+  public_domain: isPublicDomain
+fixed:
+  museum: met
