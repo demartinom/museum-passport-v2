@@ -22,48 +22,55 @@ conn.execute("""
                  image_large TEXT,
                  image_small TEXT,
                  medium TEXT,
-                 public_domain BOOLEAN
+                 public_domain BOOLEAN,
+                 period TEXT,
+                 culture TEXT
                  
              )
              """)
 
-file_path = REPO_ROOT / "data" / "normalized" / "met" / "49925.json"
-file_text = file_path.read_text()
-file_data = json.loads(file_text)
+normalized_dir = REPO_ROOT / "data" / "normalized" / "met"
+for file_path in normalized_dir.glob("*.json"):
+    file_text = file_path.read_text()
+    file_data = json.loads(file_text)
 
-conn.execute(
-    """
-             INSERT OR REPLACE INTO objects(
-                 id,
-                museum,
-                source_id,
-                title,
-                artist,
-                date_display,
-                date_begin,
-                date_end,
-                url,
-                image_large,
-                image_small,
-                medium,
-                public_domain
-             ) VALUES(
-                :id,
-                :museum,
-                :source_id,
-                :title,
-                :artist,
-                :date_display,
-                :date_begin,
-                :date_end,
-                :url,
-                :image_large,
-                :image_small,
-                :medium,
-                :public_domain
-             )
-             """,
-    file_data,
-)
+    conn.execute(
+        """
+                INSERT OR REPLACE INTO objects(
+                    id,
+                    museum,
+                    source_id,
+                    title,
+                    artist,
+                    date_display,
+                    date_begin,
+                    date_end,
+                    url,
+                    image_large,
+                    image_small,
+                    medium,
+                    public_domain,
+                    period,
+                    culture
+                ) VALUES(
+                    :id,
+                    :museum,
+                    :source_id,
+                    :title,
+                    :artist,
+                    :date_display,
+                    :date_begin,
+                    :date_end,
+                    :url,
+                    :image_large,
+                    :image_small,
+                    :medium,
+                    :public_domain,
+                    :period,
+                    :culture
+                )
+                """,
+        file_data,
+    )
 
 conn.commit()
