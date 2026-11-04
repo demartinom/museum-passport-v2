@@ -13,3 +13,5 @@
 | image_small   | Thumbnail image                                  | primaryImageSmall     |
 | medium        | What medium the art was made with (may not keep) | medium                |
 | public_domain | Image is open access                             | isPublicDomain        |
+| culture       | Artwork culture                                  | culture               |
+| period        | General period when artwork was created          | period                |
