@@ -10,5 +10,7 @@ fields:
   image_small: primaryImageSmall
   medium: medium
   public_domain: isPublicDomain
+  culture: culture
+  period: period
 fixed:
   museum: met
