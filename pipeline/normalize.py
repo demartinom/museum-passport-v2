@@ -27,7 +27,7 @@ def normalize_all(museum: str, items: list[dict], mapping: dict):
         normalized_item = normalize(item, mapping)
         path = normalized_folder / f"{normalized_item["source_id"]}.json"
 
-        item_string = json.dumps(normalized_item)
+        item_string = json.dumps(normalized_item, ensure_ascii=False)
         path.write_text(item_string)
 
 
