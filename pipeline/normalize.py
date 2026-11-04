@@ -32,12 +32,16 @@ def normalize_all(museum: str, items: list[dict], mapping: dict):
 
 
 if __name__ == "__main__":
-    mapping_path = REPO_ROOT / "pipeline" / "mappings" / "met.yaml"
+    museum = "met"
+    mapping_path = REPO_ROOT / "pipeline" / "mappings" / f"{museum}.yaml"
     yaml_text = mapping_path.read_text()
     mapping = yaml.safe_load(yaml_text)
 
-    raw_path = REPO_ROOT / "data" / "raw" / "met" / "49925.json"
-    raw_text = raw_path.read_text()
-
-    raw = json.loads(raw_text)
-    print(normalize(raw, mapping))
+    raw_dir = REPO_ROOT / "data" / "raw" / museum
+    raw_files = raw_dir.glob("*.json")
+    all_records = []
+    for raw_path in raw_files:
+        raw_text = raw_path.read_text()
+        raw_data = json.loads(raw_text)
+        all_records.append(raw_data)
+    normalize_all(museum, all_records, mapping)
