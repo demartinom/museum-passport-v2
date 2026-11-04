@@ -93,6 +93,7 @@ def test_real_mapping_on_porcelain_pagoda_brick():
         "id", "museum", "source_id", "title", "artist",
         "date_display", "date_begin", "date_end", "url",
         "image_large", "image_small", "medium", "public_domain",
+        "culture", "period",
     }
     assert record["id"] == "met-49925"
     assert record["title"] == "Brick from the Porcelain Pagoda"
@@ -100,3 +101,5 @@ def test_real_mapping_on_porcelain_pagoda_brick():
     assert record["date_begin"] == 1403
     assert record["date_end"] == 1430
     assert record["public_domain"] is True
+    assert record["culture"] == "China"
+    assert record["period"] == "Ming dynasty (1368–1644), Yongle period (1403–24)"
