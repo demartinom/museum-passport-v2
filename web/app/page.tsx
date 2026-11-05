@@ -16,19 +16,27 @@ type Props = {
 
 export default async function Home(props: Props) {
   const searchParams = await props.searchParams;
-  const startParam = Number(searchParams.start);
-  const endParam = Number(searchParams.end);
+
+  let start = -10000;
+  if (searchParams.start) {
+    start = Number(searchParams.start);
+  }
+
+  let end = 30000;
+  if (searchParams.end) {
+    end = Number(searchParams.end);
+  }
 
   const dbPath = path.join(process.cwd(), "..", "data", "collection.db");
   const db = new DatabaseSync(dbPath, { readOnly: true });
 
   const dbCall = db.prepare(
-    "SELECT id, title, date_display, period FROM objects WHERE date_begin <= :end AND date_end >= :start",
+    "SELECT id, title, date_display, period FROM objects WHERE date_begin <= :end AND date_end >= :start ORDER BY date_begin, id LIMIT 20",
   );
 
   const result = dbCall.all({
-    start: startParam,
-    end: endParam,
+    start,
+    end,
   }) as Artwork[];
   const items = result.map((artwork) => (
     <div key={artwork.id}>
@@ -50,14 +58,17 @@ export default async function Home(props: Props) {
   return (
     <div>
       <form>
-        <label>Start year</label>
-        <input type="number" name="start" />
-        <label>End year</label>
-        <input type="number" name="end" />
+        <label>
+          Start year{" "}
+          <input type="number" name="start" defaultValue={searchParams.start} />
+        </label>
+
+        <label>
+          End year{" "}
+          <input type="number" name="end" defaultValue={searchParams.end} />
+        </label>
         <button type="submit">Filter</button>
       </form>
-
-      <p>Results Length: {result.length}</p>
       {items}
     </div>
   );
