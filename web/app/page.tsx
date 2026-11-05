@@ -1,6 +1,8 @@
 import path from "path";
 import { DatabaseSync } from "node:sqlite";
 
+export const instant = false;
+
 type Artwork = {
   id: string;
   title: string;
