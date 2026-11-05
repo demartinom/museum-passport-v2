@@ -20,7 +20,7 @@ while True:
     all_ids.extend(data["objectIDs"])
     offset += 100
     time.sleep(0.5)
-    if len(all_ids) >= 1000:
+    if len(all_ids) >= data["total"]:
         break
 
 folder = Path(__file__).parent.parent / "data" / "raw" / "met"
