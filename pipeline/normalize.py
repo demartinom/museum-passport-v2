@@ -5,11 +5,25 @@ import json
 REPO_ROOT = Path(__file__).parent.parent
 
 
+# Returns data from nested path
+def get_path(raw: dict, path: str):
+    steps = path.split(".")
+    value = raw
+    for step in steps:
+        if step.isdigit():
+            if len(value) == 0:
+                return None
+            value = value[int(step)]
+        else:
+            value = value[step]
+    return value
+
+
 def normalize(raw: dict, mapping: dict) -> dict:
     record = {}
 
     for my_field, museum_field in mapping["fields"].items():
-        record[my_field] = raw[museum_field]
+        record[my_field] = get_path(raw, museum_field)
 
     for my_field, fixed_value in mapping["fixed"].items():
         record[my_field] = fixed_value
@@ -32,7 +46,7 @@ def normalize_all(museum: str, items: list[dict], mapping: dict):
 
 
 if __name__ == "__main__":
-    museum = "met"
+    museum = "princeton"
     mapping_path = REPO_ROOT / "pipeline" / "mappings" / f"{museum}.yaml"
     yaml_text = mapping_path.read_text()
     mapping = yaml.safe_load(yaml_text)
