@@ -5,6 +5,7 @@ fields:
   date_begin: datebegin
   date_end: dateend
   medium: medium
+  artist: makers.0.displayname
   culture: displayculture
   period: displayperiod
 fixed:
