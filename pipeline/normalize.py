@@ -8,8 +8,8 @@ REPO_ROOT = Path(__file__).parent.parent
 def normalize(raw: dict, mapping: dict) -> dict:
     record = {}
 
-    for my_field, met_field in mapping["fields"].items():
-        record[my_field] = raw[met_field]
+    for my_field, museum_field in mapping["fields"].items():
+        record[my_field] = raw[museum_field]
 
     for my_field, fixed_value in mapping["fixed"].items():
         record[my_field] = fixed_value
