@@ -1,0 +1,11 @@
+fields:
+  source_id: objectid
+  title: displaytitle
+  date_display: displaydate
+  date_begin: datebegin
+  date_end: dateend
+  medium: medium
+  culture: displayculture
+  period: displayperiod
+fixed:
+  museum: princeton
