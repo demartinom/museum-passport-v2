@@ -25,10 +25,16 @@ def normalize(raw: dict, mapping: dict) -> dict:
     record = {}
 
     for my_field, museum_field in mapping["fields"].items():
-        record[my_field] = get_path(raw, museum_field)
+        value = get_path(raw, museum_field)
+        if value == "":
+            value = None
+        record[my_field] = value
 
     for my_field, fixed_value in mapping["fixed"].items():
         record[my_field] = fixed_value
+
+    for my_field, museum_field in mapping.get("is_empty", {}).items():
+        record[my_field] = get_path(raw, museum_field) is None
 
     # record without None values, so a template missing a value raises KeyError
     # instead of becoming the text "None"
