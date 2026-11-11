@@ -1,6 +1,7 @@
 import sqlite3
 from pathlib import Path
 import json
+import sys
 
 REPO_ROOT = Path(__file__).parent.parent
 
@@ -12,6 +13,7 @@ conn.execute("""
              CREATE TABLE IF NOT EXISTS objects(
                  id TEXT PRIMARY KEY,
                  museum TEXT,
+                 museum_full_name TEXT,
                  source_id TEXT,
                  title TEXT,
                  artist TEXT,
@@ -29,7 +31,10 @@ conn.execute("""
              )
              """)
 
-normalized_dir = REPO_ROOT / "data" / "normalized" / "met"
+museum = sys.argv[1]
+item_count = 0
+
+normalized_dir = REPO_ROOT / "data" / "normalized" / museum
 for file_path in normalized_dir.glob("*.json"):
     file_text = file_path.read_text()
     file_data = json.loads(file_text)
@@ -51,7 +56,8 @@ for file_path in normalized_dir.glob("*.json"):
                     medium,
                     public_domain,
                     period,
-                    culture
+                    culture,
+                    museum_full_name
                 ) VALUES(
                     :id,
                     :museum,
@@ -67,10 +73,14 @@ for file_path in normalized_dir.glob("*.json"):
                     :medium,
                     :public_domain,
                     :period,
-                    :culture
+                    :culture,
+                    :museum_full_name
                 )
                 """,
         file_data,
     )
+    item_count += 1
+
+print(f"loaded {item_count} {museum} records")
 
 conn.commit()

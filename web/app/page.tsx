@@ -8,6 +8,7 @@ type Artwork = {
   title: string;
   period: string;
   date_display: string;
+  museum_full_name: string;
 };
 
 type Props = {
@@ -31,7 +32,7 @@ export default async function Home(props: Props) {
   const db = new DatabaseSync(dbPath, { readOnly: true });
 
   const dbCall = db.prepare(
-    "SELECT id, title, date_display, period FROM objects WHERE date_begin <= :end AND date_end >= :start ORDER BY date_begin, id LIMIT 20",
+    "SELECT id, title, date_display, period, museum_full_name FROM objects WHERE date_begin <= :end AND date_end >= :start ORDER BY date_begin, id LIMIT 20",
   );
 
   const result = dbCall.all({
@@ -50,6 +51,9 @@ export default async function Home(props: Props) {
       )}
       <p>
         <b>Period:</b> {artwork.period}
+      </p>
+      <p>
+        <b>Museum:</b> {artwork.museum_full_name}
       </p>
       <br />
     </div>

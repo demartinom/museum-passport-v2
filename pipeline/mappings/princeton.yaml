@@ -1,0 +1,20 @@
+fields:
+  source_id: objectid
+  title: displaytitle
+  date_display: displaydate
+  date_begin: datebegin
+  date_end: dateend
+  medium: medium
+  artist: makers.0.displayname
+  culture: displayculture
+  period: displayperiod
+  image_base: primaryimage.0
+fixed:
+  museum: princeton
+  museum_full_name: Princeton University Art Museum
+built:
+  url: https://artmuseum.princeton.edu/art/collections/objects/{source_id}
+  image_large: "{image_base}/full/max/0/default.jpg"
+  image_small: "{image_base}/full/600,/0/default.jpg"
+is_empty:
+  public_domain: restrictions
