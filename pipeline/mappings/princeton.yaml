@@ -11,6 +11,7 @@ fields:
   image_base: primaryimage.0
 fixed:
   museum: princeton
+  museum_full_name: Princeton University Art Museum
 built:
   url: https://artmuseum.princeton.edu/art/collections/objects/{source_id}
   image_large: "{image_base}/full/max/0/default.jpg"

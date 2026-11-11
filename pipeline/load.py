@@ -13,6 +13,7 @@ conn.execute("""
              CREATE TABLE IF NOT EXISTS objects(
                  id TEXT PRIMARY KEY,
                  museum TEXT,
+                 museum_full_name TEXT,
                  source_id TEXT,
                  title TEXT,
                  artist TEXT,
@@ -55,7 +56,8 @@ for file_path in normalized_dir.glob("*.json"):
                     medium,
                     public_domain,
                     period,
-                    culture
+                    culture,
+                    museum_full_name
                 ) VALUES(
                     :id,
                     :museum,
@@ -71,7 +73,8 @@ for file_path in normalized_dir.glob("*.json"):
                     :medium,
                     :public_domain,
                     :period,
-                    :culture
+                    :culture,
+                    :museum_full_name
                 )
                 """,
         file_data,
