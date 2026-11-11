@@ -10,3 +10,5 @@ fields:
   period: displayperiod
 fixed:
   museum: princeton
+built:
+  url: https://artmuseum.princeton.edu/art/collections/objects/{source_id}

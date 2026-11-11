@@ -28,6 +28,9 @@ def normalize(raw: dict, mapping: dict) -> dict:
     for my_field, fixed_value in mapping["fixed"].items():
         record[my_field] = fixed_value
 
+    for my_field, built_value in mapping.get("built", {}).items():
+        record[my_field] = built_value.format(**record)
+
     record["id"] = f"{record['museum']}-{record['source_id']}"
 
     return record
