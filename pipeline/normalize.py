@@ -1,6 +1,7 @@
 import yaml
 from pathlib import Path
 import json
+import sys
 
 REPO_ROOT = Path(__file__).parent.parent
 
@@ -61,7 +62,7 @@ def normalize_all(museum: str, items: list[dict], mapping: dict):
 
 
 if __name__ == "__main__":
-    museum = "princeton"
+    museum = sys.argv[1]
     mapping_path = REPO_ROOT / "pipeline" / "mappings" / f"{museum}.yaml"
     yaml_text = mapping_path.read_text()
     mapping = yaml.safe_load(yaml_text)
