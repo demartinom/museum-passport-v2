@@ -5,12 +5,13 @@ import json
 REPO_ROOT = Path(__file__).parent.parent
 
 
-# Returns data from nested path
+# Returns data from nested path, e.g. "makers.0.displayname" → raw["makers"][0]["displayname"]
 def get_path(raw: dict, path: str):
     steps = path.split(".")
     value = raw
     for step in steps:
         if step.isdigit():
+            # Empty list (e.g. no makers) is normal data, so None instead of crashing
             if len(value) == 0:
                 return None
             value = value[int(step)]
@@ -28,6 +29,8 @@ def normalize(raw: dict, mapping: dict) -> dict:
     for my_field, fixed_value in mapping["fixed"].items():
         record[my_field] = fixed_value
 
+    # record without None values, so a template missing a value raises KeyError
+    # instead of becoming the text "None"
     known = {}
 
     for name, value in record.items():
