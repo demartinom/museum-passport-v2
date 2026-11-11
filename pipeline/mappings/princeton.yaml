@@ -15,3 +15,5 @@ built:
   url: https://artmuseum.princeton.edu/art/collections/objects/{source_id}
   image_large: "{image_base}/full/max/0/default.jpg"
   image_small: "{image_base}/full/600,/0/default.jpg"
+is_empty:
+  public_domain: restrictions
