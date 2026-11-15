@@ -41,6 +41,17 @@ missing_titles = res_empty_title.fetchone()[0]
 if missing_titles > 0:
     errors.append(f"{missing_titles} items with no name")
 
+# Checks if any item has a date_begin of 0
+res_bad_date_begin = conn.execute("""
+                               SELECT COUNT(*) from objects
+                               WHERE date_begin = 0
+                               """)
+
+bad_date_begin = res_bad_date_begin.fetchone()[0]
+
+if bad_date_begin > 0:
+    errors.append(f"{bad_date_begin} items with a date_begin of 0")
+
 if not errors:
     print("All checks passed")
 else:
