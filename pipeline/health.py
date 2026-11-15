@@ -65,6 +65,19 @@ if missing_url > 0:
     errors.append(f"{missing_url} items with no url")
 
 
+# Checks if any item has a date_begin later than date_end
+res_incorrect_date_begin = conn.execute("""
+                                     SELECT COUNT(*) from objects
+                                     WHERE date_begin > date_end
+                                    """)
+
+incorrect_date_begin = res_incorrect_date_begin.fetchone()[0]
+
+if incorrect_date_begin > 0:
+    errors.append(
+        f"{incorrect_date_begin} items where date_begin is later than date_end"
+    )
+
 if not errors:
     print("All checks passed")
 else:
