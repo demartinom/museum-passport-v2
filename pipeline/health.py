@@ -52,6 +52,19 @@ bad_date_begin = res_bad_date_begin.fetchone()[0]
 if bad_date_begin > 0:
     errors.append(f"{bad_date_begin} items with a date_begin of 0")
 
+# Checks if any item is missing a url
+res_missing_url = conn.execute("""
+                               SELECT COUNT(*) from objects
+                               WHERE url = ''
+                               OR url is NULL
+                               """)
+
+missing_url = res_missing_url.fetchone()[0]
+
+if missing_url > 0:
+    errors.append(f"{missing_url} items with no url")
+
+
 if not errors:
     print("All checks passed")
 else:
