@@ -50,6 +50,13 @@ def normalize(raw: dict, mapping: dict) -> dict:
         except KeyError:
             record[my_field] = None
 
+    for my_field, fallback_value in mapping.get("fallback", {}).items():
+        try:
+            if record[my_field] is None:
+                record[my_field] = get_path(raw, fallback_value)
+        except KeyError:
+            record[my_field] = None
+
     record["id"] = f"{record['museum']}-{record['source_id']}"
 
     if record["date_begin"] == 0 and record["date_end"] == 0:
