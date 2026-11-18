@@ -19,7 +19,7 @@ res_totals = conn.execute("""
 
 totals = {}
 
-minimums = {"met": 1500, "princeton": 200}
+minimums = {"met": 3000, "princeton": 500}
 for museum, total in res_totals.fetchall():
     totals[museum] = total
 
