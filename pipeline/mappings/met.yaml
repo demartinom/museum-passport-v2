@@ -15,3 +15,5 @@ fields:
 fixed:
   museum: met
   museum_full_name: The Metropolitan Museum of Art
+fallback:
+  title: objectName
