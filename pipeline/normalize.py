@@ -87,3 +87,4 @@ if __name__ == "__main__":
         raw_data = json.loads(raw_text)
         all_records.append(raw_data)
     normalize_all(museum, all_records, mapping)
+    print(f"Rebuilt and normalized {len(all_records)} Princeton records")
