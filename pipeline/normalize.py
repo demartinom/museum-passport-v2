@@ -59,10 +59,10 @@ def normalize(raw: dict, mapping: dict) -> dict:
 
     record["id"] = f"{record['museum']}-{record['source_id']}"
 
-    if record["date_begin"] == 0 and record["date_end"] == 0:
+    if record.get("date_begin") == 0 and record["date_end"] == 0:
         record["date_begin"] = None
         record["date_end"] = None
-    elif record["date_begin"] == 0:
+    elif record.get("date_begin") == 0:
         record["date_begin"] = record["date_end"]
 
     return record
