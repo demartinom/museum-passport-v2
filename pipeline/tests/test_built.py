@@ -20,6 +20,7 @@ mapping = {
         "image_base": "primaryimage.0",
     },
     "fixed": {"museum": "princeton"},
+    "is_empty": {"public_domain": "restrictions"},
     "built": {
         "url": "https://example.org/objects/{source_id}",
         "image_large": "{image_base}/full/max/0/default.jpg",
@@ -29,8 +30,30 @@ with_image = {
     "objectid": 1,
     "makers": [{"displayname": "Albrecht Dürer"}],
     "primaryimage": ["https://media.example.org/iiif/abc"],
+    "restrictions": None,
 }
-without_image = {"objectid": 2, "makers": [], "primaryimage": []}
+without_image = {"objectid": 2, "makers": [], "primaryimage": [], "restrictions": None}
+restricted = {
+    "objectid": 3,
+    "makers": [],
+    "primaryimage": ["https://media.example.org/iiif/xyz"],
+    "restrictions": "© Estate of the artist",
+}
+
+
+def test_restricted_object_gets_no_image_links():
+    record = normalize(restricted, mapping)
+
+    assert record["public_domain"] is False
+    assert record["image_large"] is None
+    assert record["image_base"] is None
+
+
+def test_restricted_object_still_gets_its_url():
+    # Only images are hidden; the link back to the museum stays
+    record = normalize(restricted, mapping)
+
+    assert record["url"] == "https://example.org/objects/3"
 
 
 def test_fills_template_from_record():
