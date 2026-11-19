@@ -10,6 +10,14 @@ db_path = REPO_ROOT / "data" / "collection.db"
 
 conn = sqlite3.connect(db_path)
 
+conn.execute("""
+             CREATE TABLE IF NOT EXISTS count_history(
+                 museum TEXT,
+                 count INT,
+                 run_at TEXT DEFAULT CURRENT_TIMESTAMP
+             )
+             """)
+
 # Checks if a museum has fewer than expected items in database
 res_totals = conn.execute("""
              SELECT museum as "Museum",
@@ -92,6 +100,12 @@ if restricted_images > 0:
 
 
 if not errors:
+    for museum, total in totals.items():
+        conn.execute(
+            "INSERT INTO count_history (museum, count) VALUES (?,?)",
+            (museum, total),
+        )
+        conn.commit()
     print("All checks passed")
 else:
     for error in errors:
