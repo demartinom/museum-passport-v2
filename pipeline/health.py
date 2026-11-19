@@ -78,6 +78,19 @@ if incorrect_date_begin > 0:
         f"{incorrect_date_begin} items where date_begin is later than date_end"
     )
 
+# Checks if any non public-domain item has images
+res_restricted_images = conn.execute("""
+                                     SELECT COUNT(*) from objects
+                                     WHERE (image_large is NOT NULL
+                                     OR image_small is NOT NULL)
+                                     AND public_domain IS NOT 1
+                                     """)
+
+restricted_images = res_restricted_images.fetchone()[0]
+if restricted_images > 0:
+    errors.append(f"{restricted_images} restricted objects still have image links")
+
+
 if not errors:
     print("All checks passed")
 else:

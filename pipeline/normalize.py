@@ -65,6 +65,11 @@ def normalize(raw: dict, mapping: dict) -> dict:
     elif record.get("date_begin") == 0:
         record["date_begin"] = record["date_end"]
 
+    if not record.get("public_domain"):
+        for field in ["image_large", "image_small", "image_base"]:
+            if field in record:
+                record[field] = None
+
     return record
 
 
