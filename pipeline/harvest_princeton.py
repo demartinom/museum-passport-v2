@@ -27,6 +27,7 @@ while True:
 folder = Path(__file__).parent.parent / "data" / "raw" / "princeton"
 folder.mkdir(parents=True, exist_ok=True)
 
+item_count = 0
 for object_id in all_ids:
     path = folder / f"{object_id}.json"
     if path.exists():
@@ -43,9 +44,13 @@ for object_id in all_ids:
 
             raw = resp.text
             path.write_text(raw)
+            item_count += 1
+            print(f"Downloaded {item_count} new records", end="\r", flush=True)
             break
 
         except requests.RequestException as err:
             print(f"failed {object_id}: {err}")
             time.sleep(2**attempt)
     time.sleep(0.75)
+
+print(f"Search found {len(all_ids)}, downloaded {item_count} new Princeton records")

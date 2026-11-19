@@ -50,13 +50,25 @@ def normalize(raw: dict, mapping: dict) -> dict:
         except KeyError:
             record[my_field] = None
 
+    for my_field, fallback_value in mapping.get("fallback", {}).items():
+        try:
+            if record[my_field] is None:
+                record[my_field] = get_path(raw, fallback_value)
+        except KeyError:
+            record[my_field] = None
+
     record["id"] = f"{record['museum']}-{record['source_id']}"
 
-    if record["date_begin"] == 0 and record["date_end"] == 0:
+    if record.get("date_begin") == 0 and record["date_end"] == 0:
         record["date_begin"] = None
         record["date_end"] = None
-    elif record["date_begin"] == 0:
+    elif record.get("date_begin") == 0:
         record["date_begin"] = record["date_end"]
+
+    if not record.get("public_domain"):
+        for field in ["image_large", "image_small", "image_base"]:
+            if field in record:
+                record[field] = None
 
     return record
 
@@ -87,3 +99,4 @@ if __name__ == "__main__":
         raw_data = json.loads(raw_text)
         all_records.append(raw_data)
     normalize_all(museum, all_records, mapping)
+    print(f"Rebuilt and normalized {len(all_records)} {museum} records")
