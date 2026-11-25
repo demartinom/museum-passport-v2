@@ -10,24 +10,45 @@ db_path = REPO_ROOT / "data" / "collection.db"
 
 conn = sqlite3.connect(db_path)
 
-# Checks if a museum has fewer than expected items in database
+conn.execute("""
+             CREATE TABLE IF NOT EXISTS count_history(
+                 museum TEXT,
+                 count INT,
+                 run_at TEXT DEFAULT CURRENT_TIMESTAMP
+             )
+             """)
+
+# Fails if a museum's count dropped more than 10% since the last passing run
 res_totals = conn.execute("""
-             SELECT museum as "Museum",
-             COUNT(*) AS "Total Objects"
+             SELECT museum ,
+             COUNT(*) 
              FROM objects GROUP BY museum
              """)
 
 totals = {}
 
-minimums = {"met": 1500, "princeton": 200}
 for museum, total in res_totals.fetchall():
     totals[museum] = total
 
-for museum, minimum in minimums.items():
-    total = totals.get(museum, 0)
 
-    if total < minimum:
-        errors.append(f"{museum} has {total} items, expected at least {minimum} items")
+for museum, total in totals.items():
+    res_last_totals = conn.execute(
+        """
+                              SELECT count
+                              FROM count_history WHERE museum = ? 
+                              ORDER BY rowid DESC
+                              LIMIT 1
+                              """,
+        (museum,),
+    )
+    last_row = res_last_totals.fetchone()
+    if last_row is not None:
+        last_total = last_row[0]
+        minimum_total = last_total * 0.9
+        if total < minimum_total:
+            errors.append(
+                f"{museum} has {total} items, expected at least {int(minimum_total)} items"
+            )
 
 # Checks if any item is missing a title
 res_empty_title = conn.execute("""
@@ -92,6 +113,12 @@ if restricted_images > 0:
 
 
 if not errors:
+    for museum, total in totals.items():
+        conn.execute(
+            "INSERT INTO count_history (museum, count) VALUES (?,?)",
+            (museum, total),
+        )
+    conn.commit()
     print("All checks passed")
 else:
     for error in errors:
