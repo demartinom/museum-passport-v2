@@ -1,6 +1,7 @@
 import requests
 import time
 from pathlib import Path
+from datetime import date
 
 # Stores IDs from API calls
 all_ids = []
@@ -65,5 +66,9 @@ for object_id in all_ids:
             time.sleep(2**attempt)
 
     time.sleep(0.5)
+
+# Write file containing date when last ran
+last_run_path = folder / "last_run.txt"
+last_run_path.write_text(str(date.today()))
 
 print(f"Search found {len(all_ids)}, downloaded {item_count} new Met records")
