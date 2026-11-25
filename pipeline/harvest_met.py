@@ -49,7 +49,7 @@ for object_id in all_ids:
                 timeout=10,
             )
             if resp.status_code == 404:
-                with open(folder / "not_found.txt", "a") as f:
+                with open(not_found_path, "a") as f:
                     f.write(f"{object_id}\n")
                 break
             resp.raise_for_status()
