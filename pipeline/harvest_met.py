@@ -3,6 +3,11 @@ import time
 from pathlib import Path
 from datetime import date
 
+# Raw Met files, plus the harvester's two state files
+MET_DIR = Path(__file__).parent.parent / "data" / "raw" / "met"
+LAST_RUN_PATH = MET_DIR / "last_run.txt"
+NOT_FOUND_PATH = MET_DIR / "not_found.txt"
+
 
 def search_ids() -> list[int]:
     # Stores IDs from API calls
@@ -33,24 +38,12 @@ def search_ids() -> list[int]:
     return all_ids
 
 
-all_ids = search_ids()
-
-folder = Path(__file__).parent.parent / "data" / "raw" / "met"
-folder.mkdir(parents=True, exist_ok=True)
-
-# Path of txt file with last run date
-last_run_path = folder / "last_run.txt"
-
-
 def find_last_run_date(last_run_path: Path) -> str:
     # if last_run.txt doesn't exist, set last run to today
     last_run = str(date.today())
     if last_run_path.exists():
         last_run = last_run_path.read_text().strip()
     return last_run
-
-
-last_run_date = find_last_run_date(last_run_path)
 
 
 def find_refetch_ids(last_run_date: str, all_ids: list[int]) -> set[int]:
@@ -72,13 +65,6 @@ def find_refetch_ids(last_run_date: str, all_ids: list[int]) -> set[int]:
     return to_refetch
 
 
-to_refetch = find_refetch_ids(last_run_date, all_ids)
-
-item_count = 0
-
-not_found_path = folder / "not_found.txt"
-
-
 def read_not_found(not_found_path: Path) -> set[str]:
     # Reads list of IDs that returned 404
     not_found = set()
@@ -87,19 +73,7 @@ def read_not_found(not_found_path: Path) -> set[str]:
     return not_found
 
 
-not_found_ids = read_not_found(not_found_path)
-
-for object_id in all_ids:
-    path = folder / f"{object_id}.json"
-
-    # Skip objects already fetched unless the Met changed them since the last run
-    if path.exists() and object_id not in to_refetch:
-        continue
-
-    # Checks if object_id is in list of not found IDs and skips
-    if str(object_id) in not_found_ids:
-        continue
-
+def download_object(object_id: int, path: Path, not_found_path: Path) -> bool:
     # attemps API call 3 times before moving on to next ID
     for attempt in range(3):
         try:
@@ -110,22 +84,47 @@ for object_id in all_ids:
             if resp.status_code == 404:
                 with open(not_found_path, "a") as f:
                     f.write(f"{object_id}\n")
-                break
+                return False
             resp.raise_for_status()
 
             raw = resp.text
             path.write_text(raw)
-            item_count += 1
-            print(f"Downloaded {item_count} records", end="\r", flush=True)
-            break
+            return True
 
         except requests.RequestException as err:
             print(f"failed {object_id}: {err}")
             time.sleep(2**attempt)
+    return False
 
-    time.sleep(0.5)
 
-# Write file containing date when last ran
-last_run_path.write_text(str(date.today()))
+def main():
+    item_count = 0
+    MET_DIR.mkdir(parents=True, exist_ok=True)
 
-print(f"Search found {len(all_ids)}, downloaded {item_count} Met records")
+    all_ids = search_ids()
+    last_run_date = find_last_run_date(LAST_RUN_PATH)
+    to_refetch = find_refetch_ids(last_run_date, all_ids)
+    not_found_ids = read_not_found(NOT_FOUND_PATH)
+    for object_id in all_ids:
+        path = MET_DIR / f"{object_id}.json"
+
+        # Skip objects already fetched unless the Met changed them since the last run
+        if path.exists() and object_id not in to_refetch:
+            continue
+
+        # Checks if object_id is in list of not found IDs and skips
+        if str(object_id) in not_found_ids:
+            continue
+        if download_object(object_id, path, NOT_FOUND_PATH):
+            item_count += 1
+            print(f"Downloaded {item_count} records", end="\r", flush=True)
+        time.sleep(0.5)
+
+    # Write file containing date when last ran
+    LAST_RUN_PATH.write_text(str(date.today()))
+
+    print(f"Search found {len(all_ids)}, downloaded {item_count} Met records")
+
+
+if __name__ == "__main__":
+    main()
