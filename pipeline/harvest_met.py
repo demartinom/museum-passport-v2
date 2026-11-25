@@ -28,9 +28,18 @@ folder.mkdir(parents=True, exist_ok=True)
 
 item_count = 0
 
+# Reads list of IDs that returned 404
+not_found = set()
+not_found_path = folder / "not_found.txt"
+if not_found_path.exists():
+    not_found = set(not_found_path.read_text().split())
+
 for object_id in all_ids:
     path = folder / f"{object_id}.json"
     if path.exists():
+        continue
+    # Checks if object_id is in list of not found IDs and skips
+    if str(object_id) in not_found:
         continue
     # attemps API call 3 times before moving on to next ID
     for attempt in range(3):
@@ -40,6 +49,8 @@ for object_id in all_ids:
                 timeout=10,
             )
             if resp.status_code == 404:
+                with open(folder / "not_found.txt", "a") as f:
+                    f.write(f"{object_id}\n")
                 break
             resp.raise_for_status()
 
