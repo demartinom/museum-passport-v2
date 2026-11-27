@@ -1,5 +1,4 @@
-import path from "path";
-import { DatabaseSync } from "node:sqlite";
+import { dbPool } from "@/lib/db";
 
 export const instant = false;
 
@@ -28,18 +27,12 @@ export default async function Home(props: Props) {
     end = Number(searchParams.end);
   }
 
-  const dbPath = path.join(process.cwd(), "..", "data", "collection.db");
-  const db = new DatabaseSync(dbPath, { readOnly: true });
+  const sql =
+    "SELECT id, title, date_display, period, museum_full_name FROM objects WHERE date_begin <= $1 AND date_end >= $2 ORDER BY date_begin, id LIMIT 20";
 
-  const dbCall = db.prepare(
-    "SELECT id, title, date_display, period, museum_full_name FROM objects WHERE date_begin <= :end AND date_end >= :start ORDER BY date_begin, id LIMIT 20",
-  );
+  const result = await dbPool.query<Artwork>(sql, [end, start]);
 
-  const result = dbCall.all({
-    start,
-    end,
-  }) as Artwork[];
-  const items = result.map((artwork) => (
+  const items = result.rows.map((artwork) => (
     <div key={artwork.id}>
       <p>
         <b>Title:</b> {artwork.title}
